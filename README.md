@@ -2,7 +2,7 @@
 
 Project where the main focus is to build an remote control car with two ESP32s. 
 
-# Materials
+### Materials
 
 - ESP32 (Any)
 - L298N Motor driver module
@@ -10,7 +10,7 @@ Project where the main focus is to build an remote control car with two ESP32s.
 - Arduino ultrasound sensor
 - Geared DC motors
 
-# Things to add
+### Things to add
 
 - MCPWM to control the motors
 - ADC to read the joystick
