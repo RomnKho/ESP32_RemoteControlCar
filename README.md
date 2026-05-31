@@ -1,6 +1,6 @@
 ## Remote control car project
 
-Project where the main focus is to build an remote control car with two ESP32s. 
+Project where the main focus is to build a remote control car with two ESP32s. 
 
 ### Materials
 
@@ -21,3 +21,7 @@ Project where the main focus is to build an remote control car with two ESP32s.
 - Dash camera
 - Car direction
 - Materials
+
+### Things done
+
+- ...
