@@ -1,6 +1,6 @@
 idf_component_register(
     SRCS 
-        "../src/motor_control.c" 
+        "../src" 
         "main.c"
                     
     INCLUDE_DIRS 
