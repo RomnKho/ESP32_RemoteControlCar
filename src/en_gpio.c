@@ -4,11 +4,17 @@
  * @author  Roman Khomenko
  **/
 
+/* ========= INCLUDES =========== */
+
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "../include/en_gpio.h"
 
+/* ====== PRIVATE VARIABLES ====== */
+
 static const char *TAG = "gpio";
+
+/* ====== EXPORTED FUNCTIONS ===== */
 
 void gpio_output_init(gpio_num_t output_pin)
 {

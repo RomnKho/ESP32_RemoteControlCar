@@ -78,7 +78,7 @@ void mcpwm_init(void)
 
     ESP_ERROR_CHECK(mcpwm_new_generator(oper_handle, &gen_config, &gen_handle));
 
-    // Config how the generator works => When HIGH and when LOW => ¡ERROR HERE!
+    // Config how the generator behaves on timer events => When HIGH and when LOW 
     ESP_ERROR_CHECK(mcpwm_generator_set_actions_on_timer_event(gen_handle, 
         
         // When ticks = 0 => Generator goes HIGH
@@ -89,6 +89,7 @@ void mcpwm_init(void)
         MCPWM_GEN_TIMER_EVENT_ACTION_END()
     ));    
 
+    // Config how the generator behaves on comaparator events => When HIGH and when LOW 
     ESP_ERROR_CHECK(mcpwm_generator_set_action_on_compare_event(gen_handle,
         // When it gets to threshold it changes to low
         MCPWM_GEN_COMPARE_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP,
@@ -97,7 +98,7 @@ void mcpwm_init(void)
     ));
     ESP_LOGI(TAG, "generator config done");
 
-    // Establish initial compare value at 1 (tiny duty) for diagnostic testing
+    // Establish initial compare value at 0
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, 0));
 
     // Start timer
