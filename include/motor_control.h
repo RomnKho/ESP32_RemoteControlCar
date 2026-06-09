@@ -7,12 +7,18 @@
 #pragma once
 
 /** 
- * @brief   Initializes the needed submodules for MCPWM
+ * @brief       Initializes the needed submodules for MCPWM
  **/
 void mcpwm_init(void); 
 
 /**
- * @brief       Sets the duty cycle for the PWM => If per_duty is not in range, it does not do anything
+ * @brief       Sets the duty cycle for the PWM to go forward => If per_duty is not in range, it does not do anything
  * @param[in]   per_duty => Integer in range [0, 100]
  **/
-void mcpwm_set_duty(uint8_t per_duty);
+void mcpwm_set_duty_forward(uint8_t per_duty);
+
+/**
+ * @brief       Sets the duty cycle for the PWM to go backwards => If per_duty is not in range, it does not do anything
+ * @param[in]   per_duty => Integer in range [0, 100]
+ **/
+void mcpwm_set_duty_backwards(uint8_t per_duty);

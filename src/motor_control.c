@@ -13,6 +13,7 @@
 #include "driver/mcpwm_gen.h"
 #include "esp_log.h"
 #include "../include/motor_control.h"
+#include "../include/en_gpio.h"
 
 /* ========== DEFINES =========== */
 
@@ -22,7 +23,9 @@
 #define     MCPWM_FREQ          2000
 #define     MCPWM_PERIOD_TICKS  (MCPWM_CLK_HZ / MCPWM_FREQ)
 #define     MCPWM_COUNT_MODE    MCPWM_TIMER_COUNT_MODE_UP   // 1, 2, 3, ... , 500, 1, 2, ...
-#define     MCPWM_GPIO          GPIO_NUM_25
+#define     MCPWM_GPIO          GPIO_NUM_0
+#define     IN1_GPIO            GPIO_NUM_5
+#define     IN2_GPIO            GPIO_NUM_19
 
 /* ====== PRIVATE VARIABLES ====== */
 
@@ -76,44 +79,64 @@ void mcpwm_init(void)
     ESP_ERROR_CHECK(mcpwm_new_generator(oper_handle, &gen_config, &gen_handle));
 
     // Config how the generator works => When HIGH and when LOW
-    mcpwm_generator_set_actions_on_timer_event(gen_handle, 
+    ESP_ERROR_CHECK(mcpwm_generator_set_actions_on_timer_event(gen_handle, 
         
         // When ticks = 0 => Generator goes HIGH
         MCPWM_GEN_TIMER_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP,
                                      MCPWM_TIMER_EVENT_EMPTY,
                                      MCPWM_GEN_ACTION_HIGH),
-
         // When it gets to threshold it changes to low
         MCPWM_GEN_COMPARE_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP,
                                         cmpr_handle,
                                         MCPWM_GEN_ACTION_LOW),
         
         // End of actions
-        MCPWM_GEN_TIMER_EVENT_ACTION_END()
-    );
+        MCPWM_GEN_TIMER_EVENT_ACTION_END(),
+        MCPWM_GEN_COMPARE_EVENT_ACTION_END()
+    ));
     ESP_LOGI(TAG, "generator config done");
 
-    // Establish initial compare value at 0
-    mcpwm_comparator_set_compare_value(cmpr_handle, 0);
+    // Establish initial compare value at 1 (tiny duty) for diagnostic testing
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, 0));
 
     // Start timer
-    mcpwm_timer_enable(timer_handle);
-    mcpwm_timer_start_stop(timer_handle, MCPWM_TIMER_START_NO_STOP);
+    ESP_ERROR_CHECK(mcpwm_timer_enable(timer_handle));
+    ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer_handle, MCPWM_TIMER_START_NO_STOP));
 
     ESP_LOGI(TAG, "MCPWM config done");
+
+    gpio_output_init(IN1_GPIO);
+    gpio_output_init(IN2_GPIO);
 }
 
-void mcpwm_set_duty(uint8_t per_duty)
+void mcpwm_set_duty_forward(uint8_t per_duty)
 {
-    uint16_t threshold; 
-
     if (per_duty > 100)
     {
         ESP_LOGE(TAG, "duty percentage error");
         return;
     }
     
-    threshold = (uint16_t)(((uint32_t)per_duty * MCPWM_PERIOD_TICKS) / 100);
-    mcpwm_comparator_set_compare_value(cmpr_handle, threshold);
-    ESP_LOGI(TAG, "duty set succesfully");
+    uint32_t threshold = (((uint32_t)per_duty * MCPWM_PERIOD_TICKS) / 100);
+    if (threshold >= MCPWM_PERIOD_TICKS) threshold = MCPWM_PERIOD_TICKS - 1;
+    gpio_output_set(IN2_GPIO, GPIO_OUTPUT_LOW);
+    gpio_output_set(IN1_GPIO, GPIO_OUTPUT_HIGH);
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, (uint16_t)threshold));
+    ESP_LOGI(TAG, "forward duty set succesfully");
+}
+
+void mcpwm_set_duty_backwards(uint8_t per_duty)
+{
+    if (per_duty > 100)
+    {
+        ESP_LOGE(TAG, "duty percentage error");
+        return;
+    }
+    
+    uint32_t threshold = (((uint32_t)per_duty * MCPWM_PERIOD_TICKS) / 100);
+    if (threshold >= MCPWM_PERIOD_TICKS) threshold = MCPWM_PERIOD_TICKS - 1;
+    gpio_output_set(IN1_GPIO, GPIO_OUTPUT_LOW);
+    gpio_output_set(IN2_GPIO, GPIO_OUTPUT_HIGH);
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, (uint16_t)threshold));
+    ESP_LOGI(TAG, "backwards duty set succesfully");
 }
