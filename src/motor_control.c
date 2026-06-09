@@ -23,9 +23,9 @@
 #define     MCPWM_FREQ          2000
 #define     MCPWM_PERIOD_TICKS  (MCPWM_CLK_HZ / MCPWM_FREQ)
 #define     MCPWM_COUNT_MODE    MCPWM_TIMER_COUNT_MODE_UP   // 1, 2, 3, ... , 500, 1, 2, ...
-#define     MCPWM_GPIO          GPIO_NUM_0
-#define     IN1_GPIO            GPIO_NUM_5
-#define     IN2_GPIO            GPIO_NUM_19
+#define     MCPWM_GPIO          GPIO_NUM_27
+#define     IN1_GPIO            GPIO_NUM_26
+#define     IN2_GPIO            GPIO_NUM_25
 
 /* ====== PRIVATE VARIABLES ====== */
 
@@ -78,21 +78,22 @@ void mcpwm_init(void)
 
     ESP_ERROR_CHECK(mcpwm_new_generator(oper_handle, &gen_config, &gen_handle));
 
-    // Config how the generator works => When HIGH and when LOW
+    // Config how the generator works => When HIGH and when LOW => ¡ERROR HERE!
     ESP_ERROR_CHECK(mcpwm_generator_set_actions_on_timer_event(gen_handle, 
         
         // When ticks = 0 => Generator goes HIGH
         MCPWM_GEN_TIMER_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP,
                                      MCPWM_TIMER_EVENT_EMPTY,
                                      MCPWM_GEN_ACTION_HIGH),
+        
+        MCPWM_GEN_TIMER_EVENT_ACTION_END()
+    ));    
+
+    ESP_ERROR_CHECK(mcpwm_generator_set_action_on_compare_event(gen_handle,
         // When it gets to threshold it changes to low
         MCPWM_GEN_COMPARE_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP,
                                         cmpr_handle,
-                                        MCPWM_GEN_ACTION_LOW),
-        
-        // End of actions
-        MCPWM_GEN_TIMER_EVENT_ACTION_END(),
-        MCPWM_GEN_COMPARE_EVENT_ACTION_END()
+                                        MCPWM_GEN_ACTION_LOW)
     ));
     ESP_LOGI(TAG, "generator config done");
 
