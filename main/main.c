@@ -2,85 +2,23 @@
 #include "freertos/FreeRTOS.h"
 #include "esp_log.h"
 #include "../include/motor_control.h"
+#include "../include/joystick.h"
 
 const char *TAG = "main";
 
+static int16_t x_raw;
+static int16_t y_raw;
+static uint32_t x_mV;
+static uint32_t y_mV;
+
 void app_main(void)
 {
-    mcpwm_init();
+    joystick_init();
 
-    ESP_LOGI(TAG, "testing forward");
-    mcpwm_set_duty_forward(25);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(50);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(75);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(0);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(200);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    ESP_LOGI(TAG, "testing backwards");
-    mcpwm_set_duty_backwards(0);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(25);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(50);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(75);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(0);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(200);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    ESP_LOGI(TAG, "testing intercalation");
-    mcpwm_set_duty_forward(25);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(25);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(50);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(50);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(75);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(75);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_backwards(100);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    mcpwm_set_duty_forward(0);
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    for(;;)
+    {
+        joystick_adc_read(&x_raw, &y_raw, &x_mV, &y_mV);
+        ESP_LOGI(TAG, "raw (x,y): %d | %d", x_raw, y_raw);
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
 }
