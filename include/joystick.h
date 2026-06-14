@@ -7,7 +7,8 @@
 #pragma once
 
 /** 
- * @brief   Initiliazes both 'x' and 'y' channels with One-Shot Mode Driver and Calibrates
+ * @brief       Initiliazes both 'x' and 'y' channels with One-Shot Mode Driver and Calibrates
+ * @important   Joystick to 3.3V
  **/
 void joystick_init(void);
 

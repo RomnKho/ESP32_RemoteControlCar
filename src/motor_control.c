@@ -124,7 +124,7 @@ void mcpwm_set_duty_forward(uint8_t per_duty)
     gpio_output_set(IN2_GPIO, GPIO_OUTPUT_LOW);
     gpio_output_set(IN1_GPIO, GPIO_OUTPUT_HIGH);
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, (uint16_t)threshold));
-    ESP_LOGI(TAG, "forward duty set succesfully");
+    // ESP_LOGI(TAG, "forward duty set succesfully");
 }
 
 void mcpwm_set_duty_backwards(uint8_t per_duty)
@@ -140,5 +140,5 @@ void mcpwm_set_duty_backwards(uint8_t per_duty)
     gpio_output_set(IN1_GPIO, GPIO_OUTPUT_LOW);
     gpio_output_set(IN2_GPIO, GPIO_OUTPUT_HIGH);
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(cmpr_handle, (uint16_t)threshold));
-    ESP_LOGI(TAG, "backwards duty set succesfully");
+    // ESP_LOGI(TAG, "backwards duty set succesfully");
 }

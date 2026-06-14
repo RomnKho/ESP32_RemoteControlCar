@@ -18,7 +18,11 @@
 static bool b_chan0_cali;
 static bool b_chan1_cali;
 
-static const uint8_t  no_samples = 64;
+static const uint8_t  no_samples    = 64;
+static const uint16_t chan0_center  = 1925;
+static const uint16_t chan1_center  = 1880;
+static const uint16_t max_center    = 10;
+
 
 static adc_oneshot_unit_handle_t    adc1_handle             = NULL;
 static adc_cali_handle_t            adc_cali_chan0_handle   = NULL;
@@ -55,7 +59,7 @@ void joystick_init(void)
 
 void joystick_adc_read(int16_t *x_read, int16_t *y_read, int *x_mV, int *y_mV) 
 {
-    if(b_chan0_cali == false || b_chan1_cali == false)
+    if (b_chan0_cali == false || b_chan1_cali == false)
     {
         ESP_LOGI(TAG, "Calibration wrong");
         return;
@@ -70,7 +74,7 @@ void joystick_adc_read(int16_t *x_read, int16_t *y_read, int *x_mV, int *y_mV)
     uint32_t chan0_input = 0;
     uint32_t chan1_input = 0;    
 
-    for(int i = 0; i < no_samples; i++)
+    for (int i = 0; i < no_samples; i++)
     {
         ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, ADC1_CHAN0, &chan0_raw_read));
         ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, ADC1_CHAN1, &chan1_raw_read));
@@ -85,8 +89,18 @@ void joystick_adc_read(int16_t *x_read, int16_t *y_read, int *x_mV, int *y_mV)
     ESP_ERROR_CHECK(adc_cali_raw_to_voltage(adc_cali_chan0_handle, chan0_input, &chan0_mV));
     ESP_ERROR_CHECK(adc_cali_raw_to_voltage(adc_cali_chan1_handle, chan1_input, &chan1_mV));
 
-    *x_read = chan0_input * 100 / 4095;
-    *y_read = chan1_input * 100 / 4095;
+    if ((chan0_center - chan0_input) <= max_center)
+    {
+        chan0_input = chan0_center;
+    }
+
+    if ((chan1_center - chan1_input) <= max_center)
+    {
+        chan1_input = chan1_center;
+    }
+
+    *x_read = (chan0_input * 200 / 4095) - 100;
+    *y_read = (chan1_input * 200 / 4095) - 100;
     *x_mV   = chan0_mV;
     *y_mV   = chan1_mV;
 }

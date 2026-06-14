@@ -35,11 +35,11 @@ void gpio_output_set(gpio_num_t output_pin, gpio_output_state_t state)
     if(state == GPIO_OUTPUT_HIGH)
     {
         ESP_ERROR_CHECK(gpio_set_level(output_pin, 1));
-        ESP_LOGI(TAG, "GPIO_NUM_%d is HIGH", output_pin);
+        // ESP_LOGI(TAG, "GPIO_NUM_%d is HIGH", output_pin);
     }
     else
     {
         ESP_ERROR_CHECK(gpio_set_level(output_pin, 0));
-        ESP_LOGI(TAG, "GPIO_NUM_%d is LOW", output_pin);
+        // ESP_LOGI(TAG, "GPIO_NUM_%d is LOW", output_pin);
     }
 }
