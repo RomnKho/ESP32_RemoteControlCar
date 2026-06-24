@@ -20,7 +20,7 @@
 #define     MCPWM_GROUP_ID      0
 #define     MCPWM_CLK_SOURCE    MCPWM_TIMER_CLK_SRC_DEFAULT
 #define     MCPWM_CLK_HZ        1000000                     // 1 MHz
-#define     MCPWM_FREQ          2000
+#define     MCPWM_FREQ          20000
 #define     MCPWM_PERIOD_TICKS  (MCPWM_CLK_HZ / MCPWM_FREQ)
 #define     MCPWM_COUNT_MODE    MCPWM_TIMER_COUNT_MODE_UP   // 1, 2, 3, ... , 500, 1, 2, ...
 #define     MCPWM_GPIO          GPIO_NUM_27
