@@ -27,10 +27,16 @@ Project where the main focus is to build a remote control car with two ESP32s.
 
 ### Pinout
 
+#### Controller ESP32
 - ADC1: GPIO32
 - ADC2: GPIO33
-- MCPWM: GPIO27
-- IN1: GPIO26
-- IN2: GPIO27
+
+#### Car ESP32
+- MCPWM_LEFT: GPIO14
+- MCPWM_RIGHT: GPIO32
+- IN1: GPIO27
+- IN2: GPIO26
+- IN3: GPIO25
+- IN4: GPIO33
 
 #### Joystick must be connected to 3.3V
