@@ -18,7 +18,7 @@
 static bool b_chan0_cali;
 static bool b_chan1_cali;
 
-static const uint8_t  no_samples    = 64;
+static const uint8_t  no_samples    = 32;
 static const uint16_t chan0_center  = 0;
 static const uint16_t chan1_center  = 0;
 static const uint16_t max_center    = 20;
